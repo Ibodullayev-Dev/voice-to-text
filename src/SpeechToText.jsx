@@ -97,34 +97,24 @@ const SpeechToText = () => {
     releaseWakeLock();
   }, []);
 
-  // tranlator
+  // translator
   const translateText = async (text) => {
     try {
       const response = await fetch(
-        "https://translation.googleapis.com/language/translate/v2",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer AIzaSyCV540ada-LiIucrL0f_2bWs2Vgu1r6GwA`,
-          },
-          body: JSON.stringify({
-            q: text,
-            source: "en",
-            target: "uz",
-            format: "text",
-          }),
-        }
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
+          text
+        )}&langpair=en|uz`
       );
 
       const data = await response.json();
-      if (data?.data?.translations?.[0]?.translatedText) {
-        setTranslatedText(
-          (prev) => prev + data.data.translations[0].translatedText + " "
-        );
+      if (data.responseData.translatedText) {
+        setTranslatedText(data.responseData.translatedText);
+      } else {
+        setTranslatedText("Tarjima mavjud emas!");
       }
     } catch (error) {
-      console.error("Translation error: ", error);
+      console.error("Tarjima xatosi:", error);
+      setTranslatedText("Xatolik yuz berdi!");
     }
   };
 
